@@ -2,6 +2,7 @@ var fs = require("fs");
 var path = require("path");
 var crypto = require("crypto");
 
+var assign = require("object-assign");
 var esprima = require("esprima");
 var estraverse = require("estraverse");
 var escodegen = require("escodegen");
@@ -136,11 +137,11 @@ var mangle = function (code, options) {
                 return mangleList[key] + " = " + JSON.stringify(key.replace(MAP_PREFIX, ""));
             }).join(",\n") + ";" + newCode + "\n}());";
 
-        if (options.compress) {
-            var result = uglifyJS.minify(newCode, {
-                fromString: true,
-                compress: options.compress
-            });
+        if (options.UglifyJS) {
+            var result = uglifyJS.minify(
+                newCode,
+                assign({}, options.UglifyJS, {fromString: true})
+            );
 
             if (result.code) {
                 newCode = result.code;

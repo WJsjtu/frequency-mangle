@@ -11,10 +11,12 @@ var runTest = function (filename) {
     frequencyMangle.mangleFile(sourcePath, {
         encoding: "utf8"
     }, {
-        compress: {
-            dead_code: true,
-            global_defs: {
-                DEBUG: false
+        UglifyJS: {
+            compress: {
+                dead_code: true,
+                global_defs: {
+                    DEBUG: false
+                }
             }
         },
         info: true
