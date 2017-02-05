@@ -1,0 +1,28 @@
+{
+  "name": "frequency-mangle",
+  "version": "0.0.1",
+  "description": "A property/string mangle tools for javascript.",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "test": "node test/test.js"
+  },
+  "dependencies": {
+    "cli-color": "^1.1.0",
+    "escodegen": "^1.8.1",
+    "esprima": "^3.1.3",
+    "estraverse": "^4.2.0",
+    "uglify-js": "^2.7.5"
+  },
+  "author": {
+    "name": "王健（Jason Wang）",
+    "email": "jasonwang0421@gmail.com",
+    "url": "http://github.com/wjsjtu"
+  },
+  "homepage": "http://wjsjtu.github.io/frequency-mangle/",
+  "keywords": [
+    "mangle",
+    "optimize",
+    "javascript"
+  ]
+}
