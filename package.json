@@ -1,6 +1,6 @@
 {
   "name": "frequency-mangle",
-  "version": "0.0.3",
+  "version": "0.0.5",
   "description": "A property/string mangle tools for javascript.",
   "main": "index.js",
   "license": "MIT",

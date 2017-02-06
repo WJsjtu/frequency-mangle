@@ -158,7 +158,7 @@ var mangle = function (code, options) {
             newCode = escodegen.generate(ast);
             newCode = "!(function(){\nvar " + mangleKeys.map(function (key) {
                     return mangleList[key] + " = " + JSON.stringify(key.replace(MAP_PREFIX, ""));
-                }).join(",\n") + ";" + newCode + "\n}());";
+                }).reverse().join(",\n") + ";" + newCode + "\n}());";
 
             if (options.UglifyJS) {
                 var result = uglifyJS.minify(
