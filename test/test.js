@@ -19,7 +19,8 @@ var runTest = function (filename) {
                 }
             }
         },
-        info: true
+        info: true,
+        ignorePropertyKey: true
     }).then(function (content) {
 
         fs.writeFileSync(buildPath, content, "utf8");
