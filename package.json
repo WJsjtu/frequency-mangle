@@ -1,13 +1,13 @@
 {
   "name": "frequency-mangle",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "A property/string mangle tools for javascript.",
   "main": "index.js",
   "license": "MIT",
   "scripts": {
     "test": "node test/test.js"
   },
-  "devDependencies": {
+  "dependencies": {
     "cli-color": "^1.1.0",
     "escodegen": "^1.8.1",
     "esprima": "^3.1.3",
