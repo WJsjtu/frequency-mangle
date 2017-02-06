@@ -135,7 +135,8 @@ var mangle = function (code, options) {
                             if (options.ignorePropertyKey) {
                                 /**
                                  * var b = {"default": 2}; => var a = "default"; b = {[a]: 2};
-                                 * This will cause UglifyJS parse error.
+                                 * This may cause UglifyJS parse error.
+                                 * https://github.com/mishoo/UglifyJS2/issues/1373
                                  */
                                 return;
                             } else {
