@@ -19,14 +19,19 @@ var runTest = function (filename) {
                 }
             }
         },
-        info: true,
-        ignorePropertyKey: true
+        /*
+         * Explicitly set `ignorePropertyKey` to true is not needed.
+         * Make sure your browser or minify tools support `computed property key`.
+         */
+        //ignorePropertyKey: true,
+        ignoreUseStrict: false,
+        info: true
     }).then(function (content) {
 
         fs.writeFileSync(buildPath, content, "utf8");
-        console.log(filename + ":\t" + raw.length + " -> " + content.length + "\t" + (100 * content.length / raw.length).toFixed(2) + "%.");
+        console.log(filename + ":\t" + raw.length + " -> " + content.length + "\t" + (100 * content.length / raw.length).toFixed(2) + "%.\n");
     });
 };
 
-runTest("jquery-3.1.1.min.js");
+runTest("jquery.min.js");
 runTest("react-with-addons.min.js");

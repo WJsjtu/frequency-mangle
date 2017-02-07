@@ -15,12 +15,31 @@ var error = require("./utils/error");
 var MAP_PREFIX = "MAP_";
 var ES_OPTIMIZE = "ES_OPTIMIZE_";
 
+var defaultESCodeGenOption = {comment: false};
+var defaultESPrimaOption = {comment: false, attachComment: false};
+var defaultOption = {
+    /**
+     * var b = {"default": 2}; => var a = "default"; b = {[a]: 2};
+     * This may cause UglifyJS parse error if not in harmony branch.
+     * https://github.com/mishoo/UglifyJS2/issues/1373
+     * This is ES6 feature.
+     * To use harmony branch, modify your package.json file.
+     * {"uglify-js": "git+https://github.com/mishoo/UglifyJS2.git#harmony"}
+     */
+    ignorePropertyKey: true,
+    /**
+     * "use strict" is preserved by default.
+     */
+    ignoreUseStrict: true,
+    UglifyJS: false,
+    escodegen: defaultESCodeGenOption,
+    esprima: defaultESPrimaOption
+};
+
 var mangle = function (code, options) {
 
     options = options || {};
-    options = assign({
-        ignorePropertyKey: true
-    }, options);
+    options = assign(defaultOption, options);
 
     var varDeclaredMap = {};
     var mangleMap = {};
@@ -28,7 +47,8 @@ var mangle = function (code, options) {
     var ast;
     try {
         ast = esprima.parse(
-            code//, {loc: true, range: true}
+            code,
+            options.esprima
         );
     } catch (e) {
         error(e.toString());
@@ -48,11 +68,11 @@ var mangle = function (code, options) {
                 } else {
                     mangleMap[memberName] = 1;
                 }
-            } else if (node.type === "Literal" && typeof node.value === "string"
-            //&& node.value != "use strict"
-            ) {
+            } else if (node.type === "Literal" && typeof node.value === "string") {
+                if (node.value === "use strict" && options.ignoreUseStrict) {
+                    return;
+                }
                 if (parent.type === "Property" && parent.key === node && options.ignorePropertyKey) {
-                    //Not record the prop keys if options.ignorePropertyKey is set true
                     return;
                 }
                 var literalValue = MAP_PREFIX + node.value;
@@ -133,11 +153,6 @@ var mangle = function (code, options) {
                     if (mangleList[literalValue]) {
                         if (parent.type === "Property" && parent.key === node) {
                             if (options.ignorePropertyKey) {
-                                /**
-                                 * var b = {"default": 2}; => var a = "default"; b = {[a]: 2};
-                                 * This may cause UglifyJS parse error.
-                                 * https://github.com/mishoo/UglifyJS2/issues/1373
-                                 */
                                 return;
                             } else {
                                 parent.computed = true;
@@ -156,12 +171,12 @@ var mangle = function (code, options) {
         });
 
         try {
-            newCode = escodegen.generate(ast);
+            newCode = escodegen.generate(ast, options.escodegen);
             newCode = "!(function(){\nvar " + mangleKeys.map(function (key) {
                     return mangleList[key] + " = " + JSON.stringify(key.replace(MAP_PREFIX, ""));
                 }).reverse().join(",\n") + ";" + newCode + "\n}());";
 
-            if (options.UglifyJS) {
+            if (typeof options.UglifyJS === "object") {
                 var result = uglifyJS.minify(
                     newCode,
                     assign({}, options.UglifyJS, {fromString: true})
