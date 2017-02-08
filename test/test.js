@@ -1,6 +1,6 @@
 var fs = require("fs");
 var path = require("path");
-var frequencyMangle = require("./../index");
+var frequencyMangle = require("./../src/index");
 
 var runTest = function (filename) {
     var sourcePath = path.resolve(__dirname, "src", filename);
@@ -11,21 +11,15 @@ var runTest = function (filename) {
     frequencyMangle.mangleFile(sourcePath, {
         encoding: "utf8"
     }, {
-        UglifyJS: {
-            compress: {
-                dead_code: true,
-                global_defs: {
-                    DEBUG: false
-                }
-            }
-        },
+        mangle: true,
+        minify: true,
         /*
          * Explicitly set `ignorePropertyKey` to true is not needed.
          * Make sure your browser or minify tools support `computed property key`.
          */
         //ignorePropertyKey: true,
         ignoreUseStrict: false,
-        info: true
+        info: false
     }).then(function (content) {
 
         fs.writeFileSync(buildPath, content, "utf8");
